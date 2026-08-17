@@ -1,14 +1,30 @@
-from flask import Flask, Response
+from flask import Flask, Response, request, jsonify
 from flask_cors import CORS
 import cv2
+
+from face_recognition import (
+    register_face,
+    recognize,
+    load_model
+)
 
 app = Flask(__name__)
 CORS(app)
 
-camera = cv2.VideoCapture(0)
+# Load existing face model if one exists
+load_model()
+
+
+@app.get("/")
+def home():
+    return {
+        "message": "HearSee Backend Running"
+    }
 
 
 def generate_frames():
+
+    camera = cv2.VideoCapture(0)
 
     while True:
 
@@ -17,7 +33,12 @@ def generate_frames():
         if not success:
             break
 
-        _, buffer = cv2.imencode(".jpg", frame)
+        frame = recognize(frame)
+
+        success, buffer = cv2.imencode(".jpg", frame)
+
+        if not success:
+            continue
 
         yield (
             b"--frame\r\n"
@@ -26,13 +47,7 @@ def generate_frames():
             + b"\r\n"
         )
 
-
-@app.get("/")
-def home():
-
-    return {
-        "message": "HearSee Backend Running"
-    }
+    camera.release()
 
 
 @app.get("/video_feed")
@@ -44,5 +59,35 @@ def video_feed():
     )
 
 
+@app.post("/register")
+def register():
+
+    data = request.get_json()
+
+    name = data.get("name", "").strip()
+
+    if not name:
+
+        return jsonify({
+            "message": "Please enter a name."
+        }), 400
+
+    print(f"Registering {name}...")
+
+    register_face(name)
+
+    load_model()
+
+    return jsonify({
+        "message": f"{name} registered successfully!"
+    })
+
+
 if __name__ == "__main__":
-    app.run(debug=True, use_reloader=False)
+
+    print("Starting HearSee backend...")
+
+    app.run(
+        debug=False,
+        use_reloader=False
+    )

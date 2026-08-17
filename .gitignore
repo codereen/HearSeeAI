@@ -16,3 +16,4 @@ frontend/node_modules/
 backend/recordings/
 backend/trainer/
 backend/dataset/
+backend/.env

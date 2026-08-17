@@ -8,17 +8,23 @@ from face_recognition import (
     load_model
 )
 
+from speech_recognition import (
+    start_recording,
+    stop_recording
+)
+
+
 app = Flask(__name__)
 CORS(app)
 
-# Load existing face model if one exists
 load_model()
 
 
 @app.get("/")
 def home():
+
     return {
-        "message": "HearSee Backend Running"
+        "message": "Backend Running"
     }
 
 
@@ -35,7 +41,10 @@ def generate_frames():
 
         frame = recognize(frame)
 
-        success, buffer = cv2.imencode(".jpg", frame)
+        success, buffer = cv2.imencode(
+            ".jpg",
+            frame
+        )
 
         if not success:
             continue
@@ -64,7 +73,10 @@ def register():
 
     data = request.get_json()
 
-    name = data.get("name", "").strip()
+    name = data.get(
+        "name",
+        ""
+    ).strip()
 
     if not name:
 
@@ -72,20 +84,45 @@ def register():
             "message": "Please enter a name."
         }), 400
 
-    print(f"Registering {name}...")
+    print(
+        f"Registering {name}..."
+    )
 
     register_face(name)
 
     load_model()
 
     return jsonify({
-        "message": f"{name} registered successfully!"
+        "message":
+            f"{name} registered successfully!"
+    })
+
+
+@app.post("/start_recording")
+def start_recording_route():
+
+    start_recording()
+
+    return jsonify({
+        "status": "recording"
+    })
+
+
+@app.post("/stop_recording")
+def stop_recording_route():
+
+    text = stop_recording()
+
+    return jsonify({
+        "transcript": text
     })
 
 
 if __name__ == "__main__":
 
-    print("Starting HearSee backend...")
+    print(
+        "Starting backend..."
+    )
 
     app.run(
         debug=False,

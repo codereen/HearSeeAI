@@ -1,0 +1,18 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Environment variables
+.env
+
+# Node
+frontend/node_modules/
+
+# macOS
+.DS_Store
+
+# Generated files
+backend/recordings/
+backend/trainer/
+backend/dataset/

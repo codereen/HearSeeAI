@@ -30,15 +30,15 @@ body,
 
     background:black;
 
-    display:flex;
+}
 
-    justify-content:center;
+.camera img{
 
-    align-items:center;
+    width:100%;
 
-    color:white;
+    height:100%;
 
-    font-size:30px;
+    object-fit:cover;
 
 }
 

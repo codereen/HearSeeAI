@@ -8,9 +8,12 @@ function App() {
 
       <div className="camera">
 
-        <h2>Camera Feed</h2>
+    <img
+        src="http://127.0.0.1:5000/video_feed"
+        alt="Camera"
+    />
 
-      </div>
+</div>
 
       <div className="controls">
 

@@ -1,102 +1,88 @@
 # HearSee
 
-A simple multimodal AI application that combines **face recognition** and **speech recognition** in one web-based interface.
+A multimodal web app that combines **face recognition** and **speech-to-text** in one interface. Built for my Applications of Artificial Intelligence unit (AAI202) at Torrens University Australia.
 
-HearSee uses a webcam to detect and recognise registered faces while allowing the user to record speech and convert it into text.
+!(docs/demo.gif)
 
----
+## What it does
 
-## Features
+- Streams a live webcam feed and detects faces
+- Registers a new person by capturing 20 face images and training a model
+- Recognises registered people by name and labels everyone else "Unknown"
+- Records speech in the browser and transcribes it to text
+- Shows a loading state while the transcript is processed
 
-- 🎥 Live webcam feed
-- 👤 Face detection using OpenCV
-- 🧠 Face registration and training
-- 🔍 Recognition of previously registered users
-- ❓ Detection of unknown faces
-- 🎙️ Start and stop voice recording
-- 📝 Automatic speech-to-text transcription
-- ⏳ Loading state while transcription is processed
-- 🌐 React frontend with Flask backend
+## How it works
 
----
+**Face recognition**
+1. Enter a name and the webcam captures 20 images of your face.
+2. Faces are detected with an OpenCV Haar Cascade.
+3. An LBPH (Local Binary Patterns Histograms) recogniser is trained on the images and saved locally.
+4. During live video, each detected face is matched against the trained model. A low-confidence match is labelled "Unknown".
 
-## How It Works
+**Speech recognition**
+1. Start Recording captures microphone audio; Stop Recording ends it.
+2. The audio is uploaded to the AssemblyAI API.
+3. The transcript is returned and shown in the UI.
 
-HearSee combines two different AI capabilities:
+## Tech stack
 
-### Face Recognition
+| Area | Tools |
+|---|---|
+| Frontend | React, Vite, JavaScript, CSS |
+| Backend | Python, Flask, Flask-CORS |
+| Computer vision | OpenCV (Haar Cascade, LBPH) |
+| Speech | AssemblyAI API |
+| Other | NumPy, SciPy, SoundDevice |
 
-1. The user enters their name.
-2. The webcam captures 20 images of their face.
-3. The images are saved locally as training data.
-4. An LBPH face recognition model is trained using the captured images.
-5. The trained model is saved locally.
-6. When the webcam is running, registered faces are recognised and their names are displayed.
-7. Faces that are not recognised are labelled **Unknown**.
+## Getting started
 
-### Speech Recognition
+Prerequisites: Python 3.[x], Node.js [x], a webcam, a microphone, and a free [AssemblyAI](https://www.assemblyai.com/) API key.
 
-1. The user selects **Start Recording**.
-2. The microphone records the user's speech.
-3. The user selects **Stop Recording**.
-4. The recorded audio is uploaded to AssemblyAI.
-5. AssemblyAI converts the speech into text.
-6. The transcript is displayed in the application.
+```bash
+# backend
+cd backend
+python -m venv venv
+source venv/bin/activate        # Windows: venv\Scripts\activate
+pip install -r requirements.txt
+cp .env.example .env            # then add your AssemblyAI key
+python app.py
 
----
+# frontend (new terminal)
+cd frontend
+npm install
+npm run dev
+```
 
-## Technologies Used
+Open the URL Vite prints (usually http://localhost:5173).
 
-### Frontend
-
-- React
-- Vite
-- JavaScript
-- CSS
-
-### Backend
-
-- Python
-- Flask
-- Flask-CORS
-
-### AI / Machine Learning
-
-- OpenCV
-- Haar Cascade face detection
-- LBPH face recognition
-- AssemblyAI speech recognition
-
-### Other
-
-- NumPy
-- SciPy
-- SoundDevice
-- Git / GitHub
-
----
-
-## Project Structure
+## Project structure
 
 ```text
 HearSee/
-│
-├── backend/
-│   ├── app.py
-│   ├── face_recognition.py
-│   ├── speech_recognition.py
-│   ├── haarcascade_frontalface_default.xml
-│   ├── dataset/
-│   ├── trainer/
-│   └── recordings/
-│
-├── frontend/
-│   ├── src/
-│   │   ├── App.jsx
-│   │   ├── App.css
-│   │   └── index.css
-│   ├── package.json
-│   └── ...
-│
-├── .gitignore
-└── README.md
+├── backend/    Flask API, face recognition, speech recognition
+└── frontend/   React app (Vite)
+```
+
+## Limitations
+
+- LBPH is a classical method. It works best with good lighting, a front-facing face and a small number of registered people. It is not a deep-learning recogniser.
+- Currently runs locally only. 
+- Face images and recordings stay on your machine and are excluded from the repo.
+
+## What I learned
+
+- Connecting a React frontend to a Flask API (CORS, file upload, async state)
+- Training and saving a face recognition model with OpenCV
+- Calling a third-party speech-to-text API and handling its asynchronous results
+- Running involved quite a few steps, would try to simplify
+
+## Next steps
+
+- Use the browser's MediaRecorder so audio capture works when deployed
+- Swap LBPH for an embedding-based recogniser
+- Add tests and deploy the app
+
+## Author
+
+Afreen Fatima Syeda: [LinkedIn](https://linkedin.com/in/afreenfsyeda)

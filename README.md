@@ -2,7 +2,7 @@
 
 A multimodal web app that combines **face recognition** and **speech-to-text** in one interface. Built for my Applications of Artificial Intelligence unit (AAI202) at Torrens University Australia.
 
-!(docs/demo.gif)
+![HearSee demo](docs/demo.gif)
 
 ## What it does
 
